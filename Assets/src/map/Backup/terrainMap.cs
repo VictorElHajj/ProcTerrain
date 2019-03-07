@@ -10,7 +10,7 @@ public class terrainMap
     private int seed;
     Random rand;
     //Erosion settings
-    double erosions = 1000;
+    double erosions = 0;
     double inertia = 0.3; //Set value
     double minSlope = 0.01;
     double capacity = 8;
@@ -24,7 +24,7 @@ public class terrainMap
     /* 
     Implement proper deposition!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         */
-    public terrainMap(int width, int heigth, int seed) {
+    public terrainMap (int width, int heigth, int seed) {
         this.map = new double[width+1,heigth+1][]; //10 by 10 example
         this.seed = seed;
         this.simplex1 = new FastNoise();
@@ -56,8 +56,8 @@ public class terrainMap
                 r /= 2.0; // [0,1]
 
                 //Cutting of edges with a circular mask. Uncomment two lines below to turn into island
-                h = elipseGradient[i,j];
-               //h = Math.Max(h, 0);
+                //h = elipseGradient[i,j];
+                //h = Math.Max(h, 0);
 
                 //If initial terrain is zero then the rain should be zero, used to not waste computing in the erosion method.
                 r = h == 0 ? 0 : r;
