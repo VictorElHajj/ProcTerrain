@@ -5,18 +5,18 @@ using UnityEditor;
 
 public class TerrainDrawer : MonoBehaviour
 {
-    public terrainMap Map;
+    public Terrain terrain;
     Vector3[] vectors;
     void Start() //Change to start again
     {
-        Map = new terrainMap(250, 250, 1338);
-        double[,][] map = Map.map;
-        int width  = map.GetLength(1);
-        int heigth = map.GetLength(0);
+        terrain = new Terrain(255, 255, 1338);
+        PointMap Map = terrain.Map;
+        int width  = Map.Width;
+        int height = Map.Height;
 
-        vectors = mapToVector3(map);
+        vectors = mapToVector3(Map);
 
-        int[] triangles = createTriangles(vectors, width, heigth);
+        int[] triangles = createTriangles(vectors, width, height);
 
         Mesh mesh = GetComponent<MeshFilter>().mesh;
         mesh.Clear();
@@ -36,14 +36,15 @@ public class TerrainDrawer : MonoBehaviour
 		}
     }*/
 
-    //Flattens 2D double array map into a 1D array of Vectors
-    Vector3[] mapToVector3 (double[,][] map) {
-        Vector3[] v = new Vector3[map.GetLength(0)*map.GetLength(1)];
+    //Flattens Pointmap into a 1D array of Vectors
+    Vector3[] mapToVector3 (PointMap Map) {
+        Vector3[] v = new Vector3[Map.Width*Map.Height];
     
         //Foreach is just simpler than two for loops, less off by one errors..
         int i = 0;
-        foreach (double[] vec in map) { 
-            v[i] = new Vector3 ((float)vec[0], (float)vec[1], (float)vec[2]);
+        foreach (Point point in Map.Points) { 
+            (int x, double y, int z) = point.Pos;
+            v[i] = new Vector3 ((float)x, (float)y, (float)z);
             i++;
         }
         /* Ordered like this in a 10,4 size map
