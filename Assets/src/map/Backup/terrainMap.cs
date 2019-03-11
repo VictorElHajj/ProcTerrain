@@ -181,7 +181,6 @@ public class terrainMap
             map[i,j][1] -= w*pick;
             p.sediment += w*pick;
         }
-
     }
 
     void depose (particle p, double drop) {

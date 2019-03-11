@@ -38,4 +38,15 @@ public class Vector {
         (double x2, double y2) = other.Dir;
         return new Vector(x1+x2, y1+y2);
     }
+
+    public Vector Normalize() {
+        (double x, double y) = this.Dir;
+        double length = Math.Sqrt(Math.Pow(x, 2) + Math.Pow(y, 2));
+        return new Vector(x/length, y/length);
+    }
+
+    public Vector Round() {
+        (double x, double y) = this.Dir;
+        return new Vector(Math.Round(x), Math.Round(y));
+    }
 }

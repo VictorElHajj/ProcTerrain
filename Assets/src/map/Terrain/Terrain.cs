@@ -68,8 +68,23 @@ public class Terrain {
             for (int steps = 0; steps < maxSteps; steps++)
             {
                 Vector LowestNeighbor = new Vector(p.Pos, Map.getLowestNeighboor(p.Pos));
-                Vector DirNew = (p.Dir.Scale(inertia)).Add(LowestNeighbor.Scale(-(1-inertia)));
-                //Round to [-1,1] and randomize if rounded to 0,0
+                Vector DirNew = (p.Dir.Scale(inertia).Add(LowestNeighbor.Scale(-(1-inertia)))).Normalize().Scale(Math.Sqrt(2));
+                if (DirNew.Round().Dir == (0,0)) {
+                    DirNew = Vector.Random(seed);
+                }
+
+                (int x, int z) = (Convert.ToInt32(p.Pos.Pos.x+DirNew.Round().Dir.x), Convert.ToInt32(p.Pos.Pos.z+DirNew.Round().Dir.y));
+                Point PosNew = new Point(x, Map.Points[z,x].Pos.y, z);
+
+                double hDiff = p.Pos.Pos.y-PosNew.Pos.y;
+                //Means new position is higher up
+                if (hDiff > 0) {
+                    //Depose at old pos and continue in random direction or die trying
+                }
+                //Means new position is lower
+                else {
+                    
+                }
             }
         }
     }
