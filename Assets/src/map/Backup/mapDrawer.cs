@@ -9,7 +9,7 @@ public class mapDrawer : MonoBehaviour
     Vector3[] vectors;
     void Start() //Change to start again
     {
-        Map = new terrainMap(250, 250, 1338);
+        Map = new terrainMap(255, 255, 1339);
         double[,][] map = Map.map;
         int width  = map.GetLength(1);
         int heigth = map.GetLength(0);
@@ -26,15 +26,30 @@ public class mapDrawer : MonoBehaviour
         mesh.RecalculateNormals();
 
     }
-    //DEBUG INFO
-    /*private void OnDrawGizmos () {
-		Gizmos.color = Color.black;
-		for (int i = 0; i < vectors.Length; i++) {
-			Gizmos.DrawSphere(vectors[i], 0.03f);
-            Handles.color = Color.red;
-            Handles.Label(vectors[i], i.ToString());
-		}
+//DEBUG INFO
+    /* 
+    private void OnDrawGizmos () {
+		Gizmos.color = Color.green;
+        double[,][] map = Map.map;
+        int width  = map.GetLength(1);
+        int heigth = map.GetLength(0);
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = 0; y < heigth; y++)
+            {
+                var n = Map.getLowestNeighbor(x,y);
+                if (n.HasValue) {
+                    (int i, int j) = n.Value;
+                    Vector3 start = new Vector3(x, (float)map[x,y][1], y);
+                    Vector3 target = new Vector3(x+i, (float)map[x+i,y+j][1], y+j);
+
+                    Gizmos.DrawLine(start, target);
+                }
+            }    
+        } 
+
     }*/
+
 
     //Flattens 2D double array map into a 1D array of Vectors
     Vector3[] mapToVector3 (double[,][] map) {

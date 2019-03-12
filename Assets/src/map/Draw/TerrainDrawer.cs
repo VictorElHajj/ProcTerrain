@@ -9,7 +9,7 @@ public class TerrainDrawer : MonoBehaviour
     Vector3[] vectors;
     void Start() //Change to start again
     {
-        terrain = new Terrain(255, 255, 1338);
+        terrain = new Terrain(100, 100, 1328);
         PointMap Map = terrain.Map;
         int width  = Map.Width;
         int height = Map.Height;
@@ -27,14 +27,20 @@ public class TerrainDrawer : MonoBehaviour
 
     }
     //DEBUG INFO
-    /*private void OnDrawGizmos () {
-		Gizmos.color = Color.black;
-		for (int i = 0; i < vectors.Length; i++) {
-			Gizmos.DrawSphere(vectors[i], 0.03f);
-            Handles.color = Color.red;
-            Handles.Label(vectors[i], i.ToString());
-		}
-    }*/
+    private void OnDrawGizmos () {
+		Gizmos.color = Color.green;
+        foreach (Point p in terrain.Map.Points) {
+            Point lN = terrain.Map.getLowestNeighbor(p);
+            if (lN != null) {
+                (int x, double y, int z) = p.Pos;
+                (int x2, double y2, int z2) = lN.Pos;
+                Vector3 start = new Vector3(x, (float)y, z);
+                Vector3 target = new Vector3(x2, (float)y2, z2);
+
+                Gizmos.DrawLine(start, target);
+            }
+        }
+    }
 
     //Flattens Pointmap into a 1D array of Vectors
     Vector3[] mapToVector3 (PointMap Map) {

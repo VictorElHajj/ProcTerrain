@@ -10,13 +10,13 @@ public class terrainMap
     private int seed;
     Random rand;
     //Erosion settings
-    double erosions = 0;
+    double erosions = 20000;
     double inertia = 0.3; //Set value
     double minSlope = 0.01;
-    double capacity = 8;
+    double capacity = 4;
     double deposition = 0.2;
     double erosion = 0.7; //Need to try 0.1 and 0.9;
-    int radius = 1;
+    int radius = 6;
     double gravity = 10; //Try low and high values
     double evaporation = 0.02; //Also important.
     int maxSteps = 64; //try lowering
@@ -47,7 +47,7 @@ public class terrainMap
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < heigth; j++) {
                 //Initial Simplex Heigtht for rain density and initial terrain heigth
-                double h = simplex1.GetNoise(seed1+i*1, seed1+j*1)*0.7+simplex1.GetNoise(seed2+i*2, seed2+j*2)*0.2+simplex1.GetNoise(seed3+i*4, seed3+j*4)*0.1;
+                double h = simplex1.GetNoise(seed1+i/2, seed1+j/2)*0.7+simplex1.GetNoise(seed2+i*1, seed2+j*1)*0.2+simplex1.GetNoise(seed3+i*1, seed3+j*1)*0.1;
                 double r = simplex1.GetNoise(rainSeed+i, rainSeed+j);
                 //Normalizing from [-1,1] to [0,1]
                 h += 1.0; // [0,2]
@@ -56,14 +56,14 @@ public class terrainMap
                 r /= 2.0; // [0,1]
 
                 //Cutting of edges with a circular mask. Uncomment two lines below to turn into island
-                //h = elipseGradient[i,j];
+                //h -= elipseGradient[i,j];
                 //h = Math.Max(h, 0);
 
                 //If initial terrain is zero then the rain should be zero, used to not waste computing in the erosion method.
                 r = h == 0 ? 0 : r;
 
                 //Increasing amplitude.
-                h *= 60;
+                h *= 80;
 
                 map[i,j] = new double[] {i, h, j};
                 rainMap[i,j] = r;
@@ -76,7 +76,7 @@ public class terrainMap
             if (rainMap[x,y] == 0) //Todo replace
                 continue;
             var (xDir, yDir) = randomLocationDelta();
-            particle newInput = particleErosion(new particle(x, y, xDir, yDir, 0.0, 5+rainMap[x,y], 0.0)); //Maybe replace rainmap by constant 10
+            particle newInput = particleErosion(new particle(x, y, xDir, yDir, 0.0, 10, 0.0)); //Maybe replace rainmap by constant 10
             if (newInput == null)
                 continue;
 
@@ -91,7 +91,7 @@ public class terrainMap
     class particle {
         public int x, y, xDir, yDir;
         public double speed, water, sediment;
-        public particle(int y, int x, int xDir, int yDir, double speed, double water, double sediment) {
+        public particle(int x, int y, int xDir, int yDir, double speed, double water, double sediment) {
             this.x = x;
             this.y = y;
             this.xDir = xDir;
@@ -122,7 +122,7 @@ public class terrainMap
                     depose(p, hdelta);
                     //map[p.x, p.y][1] += hdelta; //Should this be reversed??
                     p.sediment -= hdelta;
-                    //p.speed = 0; //Maybe remove this entirely
+                    p.speed = 0; //Maybe remove this entirely
                     (xDir2, yDir2) = randomLocationDelta();
                     return new particle(p.x, p.y, xDir2, yDir2, p.speed, p.water, p.sediment);
                 }
@@ -217,7 +217,7 @@ public class terrainMap
 
     }
     //Checks all neighbors and returns the relative index of the lowest. Returns null if location borders edge of map.
-    (int i, int j)? getLowestNeighbor (int x, int y) {
+    public (int i, int j)? getLowestNeighbor (int x, int y) {
         int[] dX = {-1,-1,-1, 0, 0, 1, 1, 1};
         int[] dY = {-1, 0, 1,-1, 1,-1, 0, 1};
         int smallestI = 10; //Default value is pointless
@@ -225,7 +225,7 @@ public class terrainMap
         for (int i = 0; i < 8; i++) {
             int X = x + dX[i];
             int Y = y + dY[i];
-            if (X >= 0 && X < map.GetLength(0)-1 && Y >= 0 && Y < map.GetLength(1)) {
+            if (X >= 0 && X < map.GetLength(0) && Y >= 0 && Y < map.GetLength(1)) {
                 double h = map[X,Y][1];
                 if (h < smallestH) {
                     smallestH = h;

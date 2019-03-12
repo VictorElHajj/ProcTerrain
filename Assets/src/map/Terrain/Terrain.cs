@@ -46,7 +46,7 @@ public class Terrain {
             for (int j = 0; j < width; j++)
             {
                 //Initial Simplex Heigtht for rain density and initial terrain heigth
-                double h = Simplex.GetNoise(seed1+i*1, seed1+j*1)*0.7+Simplex.GetNoise(seed2+i*2, seed2+j*2)*0.2+Simplex.GetNoise(seed3+i*4, seed3+j*4)*0.1;
+                double h = Simplex.GetNoise(seed1+i*1, seed1+j*1)*0.5+Simplex.GetNoise(seed2+i*2, seed2+j*2)*0.3+Simplex.GetNoise(seed3+i*4, seed3+j*4)*0.2;
                 //Normalizing from [-1,1] to [0,1]
                 h += 1.0; // [0,2]
                 h /= 2.0; // [0,1]
@@ -67,7 +67,7 @@ public class Terrain {
             Particle p = new Particle(initPos, Vector.Zero(), 0, 1, 0);
             for (int steps = 0; steps < maxSteps; steps++)
             {
-                Vector LowestNeighbor = new Vector(p.Pos, Map.getLowestNeighboor(p.Pos));
+                Vector LowestNeighbor = new Vector(p.Pos, Map.getLowestNeighbor(p.Pos));
                 Vector DirNew = (p.Dir.Scale(inertia).Add(LowestNeighbor.Scale(-(1-inertia)))).Normalize().Scale(Math.Sqrt(2));
                 if (DirNew.Round().Dir == (0,0)) {
                     DirNew = Vector.Random(seed);

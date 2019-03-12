@@ -18,15 +18,19 @@ public class PointMap {
         }
     }
 
-    public Point getLowestNeighboor (Point p) {
+    public Point getLowestNeighbor (Point p) {
         p = this.Points[p.Pos.x, p.Pos.z];
         Point[] neighbors = new Point[8];
         int[] dX = new int[] { 1, 1, 1,  0, 0, -1, -1, -1};
-        int[] dz = new int[] {-1, 0, 1, -1, 1, -1,  0,  1};
+        int[] dZ = new int[] {-1, 0, 1, -1, 1, -1,  0,  1};
 
         for (int i = 0; i < 8; i++)
         {
-            neighbors[i] = Points[p.Pos.x+dX[i], p.Pos.z+dz[i]];
+            int x = p.Pos.x+dX[i];
+            int y = p.Pos.z+dZ[i];
+            if (x >= Height || x < 0 || y >= Width || y < 0)
+                return null; //Borders edge of map
+            neighbors[i] = Points[x,y];
         }
 
         //finds smallest value
@@ -35,6 +39,7 @@ public class PointMap {
         return neighbors.First((Point n) => n.Pos.y==smallest);
     }
 
+    /*
     //Spreads out sediment up-picking between all points within the radius
     void erode (particle p, double pick) {
         int width = map.GetLength(0);
@@ -102,4 +107,5 @@ public class PointMap {
         }
 
     }
+    */
 }
